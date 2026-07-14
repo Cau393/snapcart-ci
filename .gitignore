@@ -1,7 +1,8 @@
 node_modules/
 .DS_Store
 .next/
-Dockerfile
-.dockerignore
 k8s/
 key*
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
