@@ -1,34 +1,32 @@
 terraform {
   required_providers {
-    docker = {
-      source  = "kreuzwerker/docker"
-      version = "~> 3.0"
+    aws = {
+      source  = "hashicorp/aws"
+      version = "~> 5.0"
     }
   }
 }
 
-provider "docker" {
-  host = "unix:///var/run/docker.sock"
-}
+provider "aws" {
+  region     = "us-east-1"
+  access_key = "test"
+  secret_key = "test"
 
-resource "docker_image" "snapcart" {
-  name = "snapcart:v1"
+  # Skip checks that only make sense against real AWS
+  skip_credentials_validation = true
+  skip_requesting_account_id  = true
+  s3_use_path_style           = true
 
-  build {
-    context = "."
+  # Send all AWS requests to LocalStack
+  endpoints {
+    s3 = "http://localhost:4566"
   }
 }
 
-resource "docker_container" "snapcart" {
-  name  = "snapcart-app"
-  image = docker_image.snapcart.image_id
-
-  ports {
-    internal = 3000
-    external = 3000
-  }
+resource "aws_s3_bucket" "images" {
+  bucket = "snapcart-images"
 }
 
-output "container_name" {
-  value = docker_container.snapcart.name
+output "bucket_name" {
+  value = aws_s3_bucket.images.bucket
 }
