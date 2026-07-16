@@ -17,9 +17,8 @@ provider "aws" {
   skip_requesting_account_id  = true
   s3_use_path_style           = true
 
-  # Send all AWS requests to LocalStack
   endpoints {
-    s3 = "http://localhost:4566"
+    s3 = "http://host.docker.internal:4566"
   }
 }
 
